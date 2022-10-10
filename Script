@@ -1,0 +1,243 @@
+getgenv().autoTap = false
+getgenv().autoHatch = false
+getgenv().autoRebirth1 = false
+getgenv().autoCollectRewards = false
+
+            
+
+function collectRewards()
+    spawn(function()
+        while autoCollectRewards == true do
+            game:GetService("ReplicatedStorage").Events.ClaimRandomReward:FireServer()  
+            wait()
+        end
+    end)
+end
+
+function buyEgg(eggType)
+    spawn(function()
+        while autoHatch == true do
+            local args = {[1] = {},[2] = eggType,[3] = 1}
+            game:GetService("ReplicatedStorage").Events.HatchEgg:InvokeServer(unpack(args))
+            wait()
+       end
+   end)
+end
+
+function doTap()
+	spawn(function()
+		while autoTap == true do
+			game:GetService("ReplicatedStorage").Events.Tap:FireServer()
+			wait()
+		end
+	end)
+end
+
+
+function autoRebirth(rebirthAmount)
+    spawn(function()
+        while autoRebirth1 == true do
+            local args = {[1] = rebirthAmount}
+            game:GetService("ReplicatedStorage").Events.Rebirth:FireServer(unpack(args))
+            wait()
+        end
+    end)
+ end
+--teleport stuff
+ function getCurrentPlayerPOS()
+    local plyr = game.Players.LocalPlayer
+    if plyr.character then
+        return plyr.Character.HumanoidRootPart.Position
+    end
+    return false
+end
+
+function teleportTO(placeCFrame)
+    local plyr = game.Players.LocalPlayer
+    if plyr.character then
+        plyr.Character.HumanoidRootPart.CFrame = placeCFrame
+    end
+end
+
+--teleportTO(game:GetService("Workspace").Portals.Forest.PortalInfo.LockPart.CFrame)
+--!!IMPORTANT!! add .CFrame to the end of teleportTO function!!
+
+function teleportWorld(world)
+    if game:GetService("Workspace").Portals:FindFirstChild(world) then
+        teleportTO(game:GetService("Workspace").Portals[world].PortalInfo.LockPart.CFrame)
+    end
+end
+
+
+
+
+local library = loadstring(game:HttpGet(('https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wall%20v3')))()
+
+local w = library:CreateWindow("Potato Hub")
+local y = library:CreateWindow("Teleports")
+
+local g = y:CreateFolder("All Teleports")
+
+local b = w:CreateFolder("AutoFarms")
+local d = w:CreateFolder("Other")
+--local e = w:CreateFolder("Testing")
+local f = w:CreateFolder("Credits")
+
+--Local B
+
+b:Toggle("AutoClicker",function(bool)
+    getgenv().autoTap = bool
+    print('AutoClicker is', bool)
+    if bool then
+        doTap()
+    end
+end)
+
+
+
+
+b:Toggle("AutoRebirth",function(bool)
+    getgenv().autoRebirth1 = bool
+    print('AutoRebirth is', bool)
+    if bool then
+        autoRebirth(rebirthAmount)
+    end
+end)
+
+
+b:Dropdown("RebirthAmount",{"20","100","500", "4000", "Request more rebirths in the discord!"},true,function(mob) 
+    rebirthAmount = mob
+end)
+
+
+b:Toggle("AutoRewards",function(bool)
+    getgenv().autoCollectRewards = bool
+    print('AutoCollectRewards is', bool)
+      if bool then
+        collectRewards()
+    end
+end)
+
+b:Toggle("AutoBuyEggs",function(bool)
+    getgenv().autoHatch = bool
+    print('AutoHatch is', bool)
+    if bool then
+        buyEgg(eggType)
+    end
+end)
+
+b:Dropdown("EggType",{"Starter Egg","Wood Egg","Jungle Egg", "Forest Egg", "Coral Egg", "Bee Egg","Swamp Egg","Snow Egg","Desert Egg","Death Egg","Death Egg","Dominus Egg","Mine Egg","Beach Egg","Dark Egg","Cloud Egg","Magma Egg","Fire Egg","Molten Egg","Underworld Egg","Blue Magma Egg","Red Magma Egg","Secret Magma Egg","Purple Magma Egg","Yellow Magma Egg","Candy Egg","Candy Egg","Flora Egg","Holy Egg","Holy Wood Egg","Holy Bee Egg","Castle Egg","Alien Egg","Frost Alien Egg","Toxic Alien Egg","Festival Egg","Japan Egg","Station Egg","Robo Egg","Request more Egg Types in the discord!"},true,function(mob) 
+    eggType = mob
+end)
+
+
+--Local D
+d:DestroyGui()
+d:Label("Press B to TP",{
+    TextSize = 18; -- Self Explaining
+    TextColor = Color3.fromRGB(255,255,255); -- Self Explaining
+    BgColor = Color3.fromRGB(69,69,69); -- Self Explaining
+}) 
+
+d:Button("ClickTP",function()
+    plr = game.Players.LocalPlayer
+    hum = plr.Character.HumanoidRootPart
+    mouse = plr:GetMouse()
+    mouse.KeyDown:connect(function(key)
+    if key == "b" then
+        if mouse.Target then
+            hum.CFrame = CFrame.new(mouse.Hit.x, mouse.Hit.y + 5, mouse.Hit.z)
+        end
+    end
+    end)
+end)
+
+
+
+--Local E
+
+--[[b:Label("AutoClicker",{
+    TextSize = 25; -- Self Explaining
+    TextColor = Color3.fromRGB(255,255,255); -- Self Explaining
+    BgColor = Color3.fromRGB(69,69,69); -- Self Explaining
+    
+}) 
+
+
+b:Button("Button",function()
+    print("Elym Winning")
+end)
+
+b:Slider("Slider",{
+    min = 10; -- min value of the slider
+    max = 50; -- max value of the slider
+    precise = true; -- max 2 decimals
+},function(value)
+    print(value)
+end)
+
+b:Dropdown("Dropdown",{"A","B","C"},true,function(mob) --true/false, replaces the current title "Dropdown" with the option that t
+    print(mob)
+end)
+
+b:Bind("Bind",Enum.KeyCode.C,function() --Default bind
+    print("Yes")
+end)
+
+b:ColorPicker("ColorPicker",Color3.fromRGB(255,0,0),function(color) --Default color
+    print(color)
+end)
+
+b:Box("Box","number",function(value) -- "number" or "string"
+    print(value)
+end)
+
+b:DestroyGui()
+
+--[[
+How to refresh a dropdown:
+1)Create the dropdown and save it in a variable
+local yourvariable = b:Dropdown("Hi",yourtable,function(a)
+    print(a)
+end)
+2)Refresh it using the function
+yourvariable:Refresh(yourtable)
+How to refresh a label:
+1)Create your label and save it in a variable
+local yourvariable = b:Label("Pretty Useless NGL",{
+    TextSize = 25; -- Self Explaining
+    TextColor = Color3.fromRGB(255,255,255);
+    BgColor = Color3.fromRGB(69,69,69);
+})
+2)Refresh it using the function
+yourvariable:Refresh("Hello") It will only change the text ofc
+--]]
+--]]
+--Local F
+
+f:Label("RobloxRBLX - Owner",{
+    TextSize = 18; 
+    TextColor = Color3.fromRGB(255,255,255); -- 
+    BgColor = Color3.fromRGB(69,69,69); -- 
+})
+f:Label("Dm RobloxRBLX #0475 For Support",{
+    TextSize = 13; 
+    TextColor = Color3.fromRGB(255,255,255); -- 
+    BgColor = Color3.fromRGB(69,69,69); -- 
+})
+
+--Local G
+
+g:Label("Script Patched :(",{
+TextSize = 15; -- Self Explaining
+TextColor = Color3.fromRGB(255,255,255); -- Self Explaining
+BgColor = Color3.fromRGB(69,69,69); -- Self Explaining 
+}) 
+
+g:Button("Spawn",function()
+    teleportTO(game:GetService("Workspace").SpawnLocation.CFrame)
+end)
+
+
+
+
